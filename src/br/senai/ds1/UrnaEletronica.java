@@ -202,8 +202,8 @@ public class UrnaEletronica extends javax.swing.JFrame implements UrnaInterface 
                     maior = listaCandidatos.get(i).getVotos();
                     nome = listaCandidatos.get(i).getNome();
                 }
-                res += "Candidato "+nome+" eleito com "+maior+" válidos!";
             }
+            res += "Candidato "+nome+" eleito com "+maior+" válidos!";
         }
         return res;
     }
