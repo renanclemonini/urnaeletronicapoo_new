@@ -36,22 +36,23 @@ public class UrnaEletronica extends javax.swing.JFrame implements UrnaInterface 
     ImageIcon kelmon = new ImageIcon(getClass().getResource("/image/kelmon.jpg"));
     ImageIcon prgamonal = new ImageIcon(getClass().getResource("/image/prgamonal.jpg"));
 
-//    private final List<Candidato> listaCandidatos = new ArrayList<>();
-//    @Override
-//    public void addCandidatoLista(Candidato candidato) {
-//        this.listaCandidatos.add(candidato);
-//    }
-//    
-//    @Override
-//    public void reiniciarVotacao(){
-//        this.listaCandidatos.removeAll(listaCandidatos);
-//        c12.resetVotos();
-//        c13.resetVotos();
-//        c14.resetVotos();
-//        c22.resetVotos();
-//        votoBranco.resetVotos();
-//        votoNulo.resetVotos();
-//    }
+    static final List<Candidato> listaCandidatos = new ArrayList<>();
+    
+    @Override
+    public void addCandidatoLista(Candidato candidato) {
+        UrnaEletronica.listaCandidatos.add(candidato);
+    }
+    
+    @Override
+    public void reiniciarVotacao(){
+        UrnaEletronica.listaCandidatos.removeAll(listaCandidatos);
+        c12.resetVotos();
+        c13.resetVotos();
+        c14.resetVotos();
+        c22.resetVotos();
+        votoBranco.resetVotos();
+        votoNulo.resetVotos();
+    }
 
     @Override
     public void setExibicao() {
@@ -113,33 +114,29 @@ public class UrnaEletronica extends javax.swing.JFrame implements UrnaInterface 
     public void setVotoConfirm() {
         switch (txtNumero.getText()) {
             case "00" -> {
-                votoNulo.addCandidatoLista(votoNulo);
-                votoNulo.addVotoLista(votoNulo.getNumero());
+                votoNulo.setVotos(votoNulo);
+                addCandidatoLista(votoNulo);
                 JOptionPane.showMessageDialog(null, "Voto nulo computado com sucesso!");
             }
             case "12" -> {
                 c12.setVotos(c12);
-                c12.addCandidatoLista(c12);
+                addCandidatoLista(c12);
                 JOptionPane.showMessageDialog(null, "Voto em " + c12.getNome() + " computado com sucesso!");
             }
             case "13" -> {
                 c13.setVotos(c13);
-                c13.addCandidatoLista(c13);
                 JOptionPane.showMessageDialog(null, "Voto em " + c13.getNome() + " computado com sucesso!");
             }
             case "14" -> {
                 c14.setVotos(c14);
-                c14.addCandidatoLista(c14);
                 JOptionPane.showMessageDialog(null, "Voto em " + c14.getNome() + " computado com sucesso!");
             }
             case "22" -> {
                 c22.setVotos(c22);
-                c22.addCandidatoLista(c22);
                 JOptionPane.showMessageDialog(null, "Voto em " + c22.getNome() + " computado com sucesso!");
             }
             case "Branco" -> {
                 votoBranco.setVotos(votoBranco);
-                votoBranco.addCandidatoLista(votoBranco);
                 JOptionPane.showMessageDialog(null, "Voto em Branco computado com sucesso!");
             }
             default -> {
@@ -171,24 +168,58 @@ public class UrnaEletronica extends javax.swing.JFrame implements UrnaInterface 
     }
     
     @Override
+    public void exibirResultados() {
+        String str = "";
+        if (listaCandidatos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Enesima zerada");
+        } else {
+            str += "\n" + c12.getNome() + ": " + c12.getVotos() + " votos validos.";
+            str += "\n" + c13.getNome() + ": " + c13.getVotos() + " votos validos.";
+            str += "\n" + c14.getNome() + ": " + c14.getVotos() + " votos validos.";
+            str += "\n" + c22.getNome() + ": " + c22.getVotos() + " votos validos.";
+            str += "\n" + votoBranco.getNome() + ": " + votoBranco.getVotos() + " votos validos.";
+            str += "\n" + votoNulo.getNome() + ": " + votoNulo.getVotos() + " votos validos.";
+            JOptionPane.showMessageDialog(null, str);
+        }
+    }
+    
+    @Override
     public void setEnter(KeyEvent evt) {
         if (KeyEvent.VK_ENTER == evt.getKeyCode()) {
             setNumeroCandidato();
         }
     }
     
-    public void exibirResultados(){
-        JOptionPane.showMessageDialog(null, c12.getResultados());
+    public String apurar() {
+        String res = "";
+        String nome = "";
+        int maior = 0;
+        if(listaCandidatos.isEmpty()){
+            res += "Enésima zerada";
+        }else{
+            for(int i = 0; i < listaCandidatos.size(); i++){
+                if(listaCandidatos.get(i).getVotos() > maior){
+                    maior = listaCandidatos.get(i).getVotos();
+                    nome = listaCandidatos.get(i).getNome();
+                }
+                res += "Candidato "+nome+" eleito com "+maior+" válidos!";
+            }
+        }
+        return res;
     }
     
-    public void reiniciarVotacao(){
-        c12.resetVotacao(c12);
-        c13.resetVotacao(c13);
-        c14.resetVotacao(c14);
-        c22.resetVotacao(c22);
-        votoNulo.resetVotacao(votoNulo);
-        votoBranco.resetVotacao(votoBranco);
-    }
+//    @metodos da implementação que Anildo propos e não deu certo
+//    public void exibirResultados(){
+//        JOptionPane.showMessageDialog(null, votoNulo.getResultados(votoNulo.getNumero()));
+//    }
+//    public void reiniciarVotacao(){
+//        c12.resetVotacao(c12);
+//        c13.resetVotacao(c13);
+//        c14.resetVotacao(c14);
+//        c22.resetVotacao(c22);
+//        votoNulo.resetVotacao(votoNulo);
+//        votoBranco.resetVotacao(votoBranco);
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -749,7 +780,7 @@ public class UrnaEletronica extends javax.swing.JFrame implements UrnaInterface 
 
     private void itemResultadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemResultadosActionPerformed
         // TODO add your handling code here:
-        exibirResultados();
+        JOptionPane.showMessageDialog(null, apurar());
     }//GEN-LAST:event_itemResultadosActionPerformed
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
